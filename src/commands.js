@@ -18,17 +18,19 @@ module.exports = {
             return
         }
 
-        if( !global.dispatcher || global.songs.length === 0 )
+        if( !global.dispatcher )
             global.dispatcher = voiceConnection.playFile( songPath )
-
-        global.songs.push( songPath )
+        else 
+            global.songs.push( songPath )
 
         global.dispatcher.on('end', () => {
-            global.dispatcher.end()
-
-            if( global.songs.length === 0 ) return
+            if( global.songs.length === 0 ) {
+                global.dispatcher = null
+                return undefined
+            }
 
             global.dispatcher = voiceConnection.playFile( global.songs.shift() )
+            return undefined
         })
     }
 }
